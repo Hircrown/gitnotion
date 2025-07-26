@@ -7,7 +7,9 @@ authors = [
     { name = "Hircrown" }
 ]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "typer>=0.16.0",
+]
 
 [project.scripts]
 gitnotion = "gitnotion:main"
