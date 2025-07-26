@@ -1,9 +1,8 @@
 import typer
 from typing_extensions import Annotated
-from utils import *
+from utils import check_exists, save_db, DB_PATH
 
 app = typer.Typer()
-
 
 #questa testa con tutto anche i due flag combinati e fuziona
 @app.command()
@@ -51,33 +50,3 @@ def create(
     save_db(name, {"headers": headers})
     typer.echo(f"Name: {name}, Headers: {headers}")
 
-
-
-@app.command()#mostra il database passando il nome. aggiunta di flag come --headers --columns, --row --
-def show(
-    db_name: Annotated[
-        str,
-        typer.Argument(
-            help="Name of the database to show"
-        )
-    ],
-    headers: Annotated[
-        bool,
-        typer.Option(
-            help="Show the headers of the database"
-        )
-    ]
-):
-    """
-    Show the current database data
-    """
-    if headers:
-        headers = get_headers(db_name)
-        if isinstance(headers, FileNotFoundError):
-            typer.secho(str(headers), fg=typer.colors.RED)
-            return
-        #L'evenienza [] non dovrebbe mai verificarsi    
-        if headers == []:
-            typer.secho("Database is empty", fg=typer.colors.RED)
-            return
-        typer.echo(f"Current database headers: {headers}")
