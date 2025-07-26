@@ -57,12 +57,12 @@ def show(
         pass
     else:
         console = Console()
-        table = Table(title = db_name,show_header=True, header_style="bold light-blue")
+        table = Table(title = db_name,show_header=True, header_style="bold deep_sky_blue1")
         headers = data.get("headers", [])
         for header in headers:
             table.add_column(header)
         
-        for row in data.get("data", []):
+        for row in data.get("rows", []):
             table.add_row(*[str(item) for item in row])
         
         console.print(table)

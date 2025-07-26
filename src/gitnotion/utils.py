@@ -35,9 +35,9 @@ def get_db_data(db_name: str) -> dict:
     except FileNotFoundError as e:
         return e
     
-def get_db_names(path: str = DB_PATH) -> list[str]:
+def get_db_names(path: str=DB_PATH) -> list[str]:
     if not os.path.exists(DB_PATH):
         raise FileNotFoundError
-    files = [file for file in os.listdir(path) if os.path.isfile(file)]
-    names = list(map(lambda x: x.rstip(".pkl"), files))
+    dbs = [file for file in os.listdir(path) if file.split(".")[-1] == "pkl"]
+    names = list(map(lambda x: x.split(".")[0], dbs))
     return names

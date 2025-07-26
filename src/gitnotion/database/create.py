@@ -46,7 +46,9 @@ def create(
                 confirm = typer.confirm(f"Are you sure you want to overwrite {name}? This operation cannot be undone.",
                                        abort=True)
             typer.echo(f"Overwriting the {name} database...")
-               
-    save_db(name, {"headers": headers})
+    # When the database is created, it will be a dictionary with headers and rows
+    db = {"headers": headers,
+          "rows": []}    
+    save_db(name, db)
     typer.echo(f"Name: {name}, Headers: {headers}")
 

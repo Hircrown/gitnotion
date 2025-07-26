@@ -1,6 +1,6 @@
 import typer
 from typing_extensions import Annotated
-from utils import get_db_data  
+from utils import get_db_data, save_db
 
 app = typer.Typer()
 
@@ -28,9 +28,11 @@ def add(
     # Just in case but it should never happen
     if headers == []:
         typer.secho("Database is empty", fg=typer.colors.RED)
-        return  
+        return 
+    row = [] 
     for header in headers:
         value = typer.prompt(f"Enter value for {header}")
-        data["db"][header] = value
+        row.append(value)
+    data["rows"].append(row)
     save_db(db_name, data)
-    typer.echo(f"Data added to {db_name} database", fg=typer.colors.GREEN)
+    typer.secho(f"Data added to {db_name} database", fg=typer.colors.GREEN)
