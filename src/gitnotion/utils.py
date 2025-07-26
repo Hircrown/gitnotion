@@ -1,7 +1,7 @@
 import os
 import pickle
 
-CONFIG_PATH = "./~/bootdev_projects/auto"
+CONFIG_PATH = os.getcwd()
 DB_PATH = f"{CONFIG_PATH}/.database"
 
 d = {"headers": ["index", "task", "status", "due_date"]}
@@ -27,3 +27,17 @@ def get_headers(db_name: str) -> list[str]:
         return db.get("headers", [])
     except FileNotFoundError as e:
         return e
+
+def get_db_data(db_name: str) -> dict:
+    try:
+        data = load_db(db_name)
+        return data
+    except FileNotFoundError as e:
+        return e
+    
+def get_db_names(path: str = DB_PATH) -> list[str]:
+    if not os.path.exists(DB_PATH):
+        raise FileNotFoundError
+    files = [file for file in os.listdir(path) if os.path.isfile(file)]
+    names = list(map(lambda x: x.rstip(".pkl"), files))
+    return names
