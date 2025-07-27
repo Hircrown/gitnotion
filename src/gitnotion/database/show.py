@@ -36,7 +36,16 @@ def show(
             help="Show a specific number of rows from the database",
             show_default=False
         )
-    ] = None
+    ] = None,
+    index: Annotated[
+        bool,
+        typer.Option(
+            help="Show the index of the database",
+            show_default=False
+        )
+    ] = True
+
+
 ):
     """
     Show the current database data
@@ -60,10 +69,15 @@ def show(
         console = Console()
         table = Table(title = db_name,show_header=True, header_style="bold deep_sky_blue1")
         headers = data.get("headers", [])
+        if index:
+            headers.insert(0, "Index")
         for header in headers:
             table.add_column(header)
-        
-        for row in data.get("rows", []):
-            table.add_row(*[str(item) for item in row])
+
+        for i, row in enumerate(data.get("rows", [])):
+            if index:
+                table.add_row(str(i), *[str(item) for item in row])
+            else:
+                table.add_row(*[str(item) for item in row])
         
         console.print(table)

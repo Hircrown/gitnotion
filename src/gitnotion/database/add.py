@@ -39,7 +39,7 @@ def add_row(
 
 
 @add_app.command("rows")
-def add_row(
+def add_rows(
     db_name: Annotated[
         str,
         typer.Argument(
@@ -71,7 +71,7 @@ def add_row(
         return 
     for i in range(n_rows):
         row = [] 
-        typer.secho(f"\nRow {i}", fg=typer.colors.BRIGHT_YELLOW)
+        typer.secho(f"\nRow {i+1}", fg=typer.colors.BRIGHT_YELLOW)
         for header in headers:
             value = typer.prompt(f"Enter value for {header}")
             row.append(value)

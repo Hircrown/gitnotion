@@ -15,10 +15,10 @@ def save_db(db_name: str, data: dict):
     with open(f"{DB_PATH}/{db_name}.pkl", "wb") as f:
         pickle.dump(data, f)
 
-def load_db(name: str) -> dict:
-    if not check_exists(f"{DB_PATH}/{name}.pkl"):
-        raise FileNotFoundError(f"Database '{name}' does not exist.")
-    with open(f"{DB_PATH}/{name}.pkl", "rb") as f:
+def load_db(db_name: str) -> dict:
+    if not check_exists(f"{DB_PATH}/{db_name}.pkl"):
+        raise FileNotFoundError(f"Database '{db_name}' does not exist.")
+    with open(f"{DB_PATH}/{db_name}.pkl", "rb") as f:
         return pickle.load(f)
 
 def get_headers(db_name: str) -> list[str]:
@@ -37,7 +37,13 @@ def get_db_data(db_name: str) -> dict:
     
 def get_db_names(path: str=DB_PATH) -> list[str]:
     if not os.path.exists(DB_PATH):
-        raise FileNotFoundError
+        raise FileNotFoundError(f"No database found")
     dbs = [file for file in os.listdir(path) if file.split(".")[-1] == "pkl"]
     names = list(map(lambda x: x.split(".")[0], dbs))
     return names
+
+def rename_db(db_name: str, new_name: str):
+    print(os.path.exists(f"{DB_PATH}/{db_name}.pkl"))
+    if not os.path.exists(f"{DB_PATH}/{db_name}.pkl"):
+        raise FileNotFoundError(f"Database '{db_name}' does not exist.")
+    os.rename(f"{DB_PATH}/{db_name}.pkl", f"{DB_PATH}/{new_name}.pkl")
