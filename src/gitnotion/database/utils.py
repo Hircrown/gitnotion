@@ -67,11 +67,14 @@ def print_headers(title: str, headers: list[str], modified: list[str]=None):
             table.add_column(header)
     console.print(table)
 
-def print_rows(title: str, headers: list[str], rows: list[list[str]], added: list[int]=None, deleted: list[int]=None):
+def print_rows(title: str, headers: list[str], rows: list[list[str]], added: list[int]=None, deleted: list[int]=None, deleted_columns: list[str]=None):
     console = Console()
     table = Table(title=title, show_header=True, header_style="b deep_sky_blue1")
     for header in headers:
-        table.add_column(header)
+        if deleted_columns and header in deleted_columns:
+            table.add_column(header, style="b s red", justify="center")
+        else:
+            table.add_column(header)
     for index, row in enumerate(rows):
         if added and index in added:
             table.add_row(*[str(item) for item in row], style="b spring_green2")

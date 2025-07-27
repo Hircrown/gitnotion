@@ -1,6 +1,6 @@
 import typer
 from typing_extensions import Annotated
-from utils import get_db_data, save_db, print_rows, print_headers
+from .utils import get_db_data, save_db, print_rows, print_headers
 
 app = typer.Typer()
 add_app = typer.Typer()

@@ -1,7 +1,7 @@
 import os
 import typer 
 from typing_extensions import Annotated
-from utils import get_db_names
+from .utils import get_db_names
 
 app = typer.Typer()
 

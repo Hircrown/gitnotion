@@ -1,7 +1,7 @@
 import typer
 from rich.prompt import Prompt, Confirm
 from typing_extensions import Annotated
-from utils import get_db_data, save_db, rename_db, print_headers
+from .utils import get_db_data, save_db, rename_db, print_headers
 
 app = typer.Typer()
 rename_app = typer.Typer()

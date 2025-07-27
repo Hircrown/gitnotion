@@ -3,7 +3,7 @@ from typing import Optional
 from typing_extensions import Annotated
 from rich.console import Console
 from rich.table import Table
-from utils import get_db_data
+from .utils import get_db_data
 
 app = typer.Typer()
 

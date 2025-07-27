@@ -1,6 +1,6 @@
 import typer
 from typing_extensions import Annotated
-from utils import check_exists, save_db, DB_PATH
+from .utils import check_exists, save_db, DB_PATH
 
 app = typer.Typer()
 
