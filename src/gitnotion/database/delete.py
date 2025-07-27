@@ -2,7 +2,7 @@ import typer
 from typing_extensions import Annotated
 from rich.prompt import Confirm
 import copy
-from .utils import delete_db, get_db_data, save_db, print_rows
+from .utils import delete_db, get_db_data, save_db, print_table
 
 app = typer.Typer()
 delete_app = typer.Typer()
@@ -107,7 +107,7 @@ def delete_row(
     save_db(db_name, data)
     typer.secho(f"Row {row_index} deleted successfully from database '{db_name}'.", fg=typer.colors.GREEN)
     if show_table:
-        print_rows(db_name, headers, initial_row, deleted=[row_index])
+        print_table(db_name, headers, initial_row, deleted_rows=[row_index])
 
 
 @delete_app.command("rows")
@@ -174,7 +174,7 @@ def delete_row(
     save_db(db_name, data)
     typer.secho(f"Rows {rows_index} deleted successfully from database '{db_name}'.", fg=typer.colors.GREEN)
     if show_table:
-        print_rows(db_name, headers, existing_rows, deleted=rows_index)
+        print_table(db_name, headers, existing_rows, deleted_rows=rows_index)
 
 @delete_app.command("column")
 def delete_column(
@@ -250,7 +250,7 @@ def delete_column(
     typer.secho(f"Column '{column_name}' deleted successfully from database '{db_name}'.", fg=typer.colors.GREEN)
     
     if show_table:
-            print_rows(db_name, initial_headers, initial_rows, deleted_columns=[column_name])
+            print_table(db_name, initial_headers, initial_rows, deleted_columns=[column_name])
 
 @delete_app.command("columns")
 def delete_columns(
@@ -323,4 +323,4 @@ def delete_columns(
 
     typer.secho(f"Columns '{', '.join(columns)}' deleted successfully from database '{db_name}'.", fg=typer.colors.GREEN)
     if show_table:
-        print_rows(db_name, initial_headers, initial_rows, deleted_columns=columns)
+        print_table(db_name, initial_headers, initial_rows, deleted_columns=columns)

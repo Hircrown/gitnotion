@@ -1,7 +1,6 @@
 import typer
 from typing_extensions import Annotated
-from .utils import get_db_data, save_db, print_rows, print_headers
-
+from .utils import get_db_data, save_db, print_table
 app = typer.Typer()
 add_app = typer.Typer()
 app.add_typer(add_app, name="add")
@@ -47,7 +46,7 @@ def add_row(
     save_db(db_name, data)
     typer.secho(f"Data added to {db_name} database", fg=typer.colors.GREEN)
     if show_table:
-        print_rows(db_name, headers, all_rows, added=[index])
+        print_table(db_name, headers, all_rows, added_rows=[index])
 
 
 
@@ -104,7 +103,7 @@ def add_rows(
     save_db(db_name, data)
     typer.secho(f"Data added to {db_name} database", fg=typer.colors.GREEN)
     if show_table:
-        print_rows(db_name, headers, all_rows, added=index)
+        print_table(db_name, headers, all_rows, added_rows=index)
 
 
 @add_app.command("header")
@@ -147,7 +146,7 @@ def add_header(
     save_db(db_name, data)
     typer.secho(f"Adding {header} to {db_name} database", fg=typer.colors.GREEN)
     if show_table:
-        print_headers(db_name, existing_headers, [header])
+        print_table(db_name, existing_headers, [], added_headers=[header])
 
 
 @add_app.command("headers")
@@ -194,4 +193,4 @@ def add_headers(
     save_db(db_name, data)
     typer.secho(f"Adding {unique_headers} to {db_name} database", fg=typer.colors.GREEN)
     if show_table:
-        print_headers(db_name, existing_headers, unique_headers)
+        print_table(db_name, existing_headers, [], added_headers=unique_headers)

@@ -67,20 +67,37 @@ def print_headers(title: str, headers: list[str], modified: list[str]=None):
             table.add_column(header)
     console.print(table)
 
-def print_rows(title: str, headers: list[str], rows: list[list[str]], added: list[int]=None, deleted: list[int]=None, deleted_columns: list[str]=None):
+def print_table(title: str, headers: list[str], rows: list[list[str]],
+               added_headers: list[str]=None, deleted_columns: list[str]=None,
+               added_rows: list[int]=None, deleted_rows: list[int]=None,
+               show_index: bool=False, show_headers: bool=True):
     console = Console()
-    table = Table(title=title, show_header=True, header_style="b deep_sky_blue1")
+    table = Table(title=title, show_header=show_headers, header_style="b deep_sky_blue1")
+    if show_index:
+        headers.insert(0, "Index")
     for header in headers:
         if deleted_columns and header in deleted_columns:
             table.add_column(header, style="b s red", justify="center")
+        elif added_headers and header in added_headers:
+            table.add_column(header, header_style="b spring_green2")
         else:
             table.add_column(header)
-    for index, row in enumerate(rows):
-        if added and index in added:
-            table.add_row(*[str(item) for item in row], style="b spring_green2")
-        elif deleted and index in deleted:
-            table.add_row(*[str(item) for item in row], style="b s red")
+
+    for i, row in enumerate(rows):
+        if show_index:
+            if added_rows and i in added_rows:
+                table.add_row(str(i), *[str(item) for item in row], style="b spring_green2")
+            elif deleted_rows and i in deleted_rows:
+                table.add_row(str(i), *[str(item) for item in row], style="b s red")
+            else:
+                table.add_row(str(i), *[str(item) for item in row])
         else:
-            table.add_row(*[str(item) for item in row])
+            if added_rows and i in added_rows:
+                table.add_row(*[str(item) for item in row], style="b spring_green2")
+            elif deleted_rows and i in deleted_rows:
+                table.add_row(*[str(item) for item in row], style="b s red")
+            else:
+                table.add_row(*[str(item) for item in row])
+
     console.print(table)
 
