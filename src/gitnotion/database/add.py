@@ -1,10 +1,11 @@
 import typer
 from typing_extensions import Annotated
-from utils import get_db_data, save_db
+from utils import get_db_data, save_db, print_rows, print_headers
 
 app = typer.Typer()
 add_app = typer.Typer()
 app.add_typer(add_app, name="add")
+
 
 @add_app.command("row")
 def add_row(
@@ -14,7 +15,14 @@ def add_row(
             help="Name of the database to add data to",
             show_default=False
         )
-    ]
+    ],
+    show_table: Annotated[
+        bool,
+        typer.Option(
+            help="Show the changes in a table format",
+            show_default=False
+        )
+    ] = True
 ):
     """
     Add a row to the specified database
@@ -34,8 +42,13 @@ def add_row(
         value = typer.prompt(f"Enter value for {header}")
         row.append(value)
     data["rows"].append(row)
+    all_rows = data.get("rows", [])
+    index = len(all_rows) - 1
     save_db(db_name, data)
     typer.secho(f"Data added to {db_name} database", fg=typer.colors.GREEN)
+    if show_table:
+        print_rows(db_name, headers, all_rows, added=[index])
+
 
 
 @add_app.command("rows")
@@ -54,7 +67,14 @@ def add_rows(
             help="Number of rows to add to the database",
             show_default=False
         )
-    ]
+    ],
+    show_table: Annotated[
+        bool,
+        typer.Option(
+            help="Show the changes in a table format",
+            show_default=False
+        )
+    ] = True
 ):
     """
     Add multiple rows to the specified database
@@ -66,18 +86,25 @@ def add_rows(
         return
     headers = data.get("headers", [])
     # Just in case but it should never happen
-    if headers == []:
+    if not headers:
         typer.secho("Database is empty", fg=typer.colors.RED)
         return 
+    rows = []
     for i in range(n_rows):
         row = [] 
         typer.secho(f"\nRow {i+1}", fg=typer.colors.BRIGHT_YELLOW)
         for header in headers:
             value = typer.prompt(f"Enter value for {header}")
             row.append(value)
-        data["rows"].append(row)
-        save_db(db_name, data)
+        rows.append(row)
+    data["rows"].extend(rows)
+    all_rows = data.get("rows", [])
+    index = list(range(len(all_rows) - n_rows, len(all_rows)))
+    print(index)
+    save_db(db_name, data)
     typer.secho(f"Data added to {db_name} database", fg=typer.colors.GREEN)
+    if show_table:
+        print_rows(db_name, headers, all_rows, added=index)
 
 
 @add_app.command("header")
@@ -95,16 +122,23 @@ def add_header(
             help="Header to add to the database",
             show_default=False
         )
-    ]
+    ],
+    show_table: Annotated[
+        bool,
+        typer.Option(
+            help="Show the changes in a table format",
+            show_default=False
+        )
+    ] = True
 ):
     """
     Add a new header to the database
     """
     data = get_db_data(db_name)
-    existing_headers = data["headers"]
-    if isinstance(existing_headers, FileNotFoundError):
-        typer.secho(str(existing_headers), fg=typer.colors.RED)
+    if isinstance(data, FileNotFoundError):
+        typer.secho(str(data), fg=typer.colors.RED)
         return
+    existing_headers = data.get("headers", [])
     if header in existing_headers:
         typer.secho(f"{header} is already a header in {db_name}", fg=typer.colors.RED)
         return
@@ -112,10 +146,12 @@ def add_header(
     data["headers"] = existing_headers
     save_db(db_name, data)
     typer.secho(f"Adding {header} to {db_name} database", fg=typer.colors.GREEN)
+    if show_table:
+        print_headers(db_name, existing_headers, [header])
 
 
 @add_app.command("headers")
-def add_header(
+def add_headers(
     db_name: Annotated[
         str,
         typer.Argument(
@@ -129,18 +165,25 @@ def add_header(
             help="Headers to add to the database",
             show_default=False
         )
-    ]
+    ],
+    show_table: Annotated[
+        bool,
+        typer.Option(
+            help="Show the changes in a table format",
+            show_default=False
+        )
+    ] = True
 ):
     """
     Add multiple headers to the database
     """
     data = get_db_data(db_name)
-    existing_headers = data["headers"]
+    if isinstance(data, FileNotFoundError):
+        typer.secho(str(data), fg=typer.colors.RED)
+        return
+    existing_headers = data.get("headers", [])
     duplicates_headers = [header for header in headers if header in existing_headers]
     unique_headers = [header for header in headers if header not in existing_headers]
-    if isinstance(existing_headers, FileNotFoundError):
-        typer.secho(str(existing_headers), fg=typer.colors.RED)
-        return
     if duplicates_headers:
         typer.secho(f"{' '.join(duplicates_headers)} are already headers in {db_name}", fg=typer.colors.RED)
         if not unique_headers:
@@ -150,3 +193,5 @@ def add_header(
     data["headers"] = existing_headers
     save_db(db_name, data)
     typer.secho(f"Adding {unique_headers} to {db_name} database", fg=typer.colors.GREEN)
+    if show_table:
+        print_headers(db_name, existing_headers, unique_headers)

@@ -1,5 +1,7 @@
 import os
 import pickle
+from rich.console import Console
+from rich.table import Table
 
 CONFIG_PATH = os.getcwd()
 DB_PATH = f"{CONFIG_PATH}/.database"
@@ -47,3 +49,35 @@ def rename_db(db_name: str, new_name: str):
     if not os.path.exists(f"{DB_PATH}/{db_name}.pkl"):
         raise FileNotFoundError(f"Database '{db_name}' does not exist.")
     os.rename(f"{DB_PATH}/{db_name}.pkl", f"{DB_PATH}/{new_name}.pkl")
+
+def delete_db(db_name: str):
+    if not os.path.exists(f"{DB_PATH}/{db_name}.pkl"):
+        raise FileNotFoundError(f"Database '{db_name}' does not exist.")
+    os.remove(f"{DB_PATH}/{db_name}.pkl")
+
+
+#--------------RICK UTILS----------------
+def print_headers(title: str, headers: list[str], modified: list[str]=None):
+    console = Console()
+    table = Table(title=title, show_header=True, header_style="b deep_sky_blue1")
+    for header in headers:
+        if modified and header in modified:
+            table.add_column(header, header_style="b spring_green2")
+        else:
+            table.add_column(header)
+    console.print(table)
+
+def print_rows(title: str, headers: list[str], rows: list[list[str]], added: list[int]=None, deleted: list[int]=None):
+    console = Console()
+    table = Table(title=title, show_header=True, header_style="b deep_sky_blue1")
+    for header in headers:
+        table.add_column(header)
+    for index, row in enumerate(rows):
+        if added and index in added:
+            table.add_row(*[str(item) for item in row], style="b spring_green2")
+        elif deleted and index in deleted:
+            table.add_row(*[str(item) for item in row], style="b s red")
+        else:
+            table.add_row(*[str(item) for item in row])
+    console.print(table)
+
