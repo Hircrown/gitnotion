@@ -9,13 +9,15 @@ app = typer.Typer()
 def create(
     name: Annotated[
         str, typer.Argument(
-            help="Database name" #mi creerà problemi avere un nome con lo spazio?
+            help="Database name. If the name contains spaces, enclose it in quotes. Example: 'name with spaces'",
+            show_default=False
         )
     ],
     headers: Annotated[
         list[str],
         typer.Argument(
-            help="Database headers"
+            help="Database headers",
+            show_default=False
         )
     ],
     overwrite: Annotated[

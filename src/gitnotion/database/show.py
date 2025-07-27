@@ -12,7 +12,8 @@ def show(
     db_name: Annotated[
         str,
         typer.Argument(
-            help="Name of the database to show"
+            help="Name of the database to show",
+            show_default=False
         )
     ],
     headers: Annotated[
