@@ -1,11 +1,11 @@
 import typer
 from rich.prompt import Prompt, Confirm
 from typing_extensions import Annotated
-from .utils import get_db_data, save_db, rename_db, print_headers
+from .utils import get_db_data, save_db, rename_db, print_table
 
 app = typer.Typer()
 rename_app = typer.Typer()
-app.add_typer(rename_app, name="rename")
+app.add_typer(rename_app, name="rename", help="Rename a database or its headers")
 
 #nome database
 #nome header o headers
@@ -36,6 +36,7 @@ def rename_database(
     except FileNotFoundError as e:
         typer.secho(str(e), fg=typer.colors.RED)
         return
+ 
     
 @rename_app.command("header")
 def rename_header(
@@ -89,7 +90,7 @@ def rename_header(
     save_db(db_name, data)
     typer.secho(f"Header '{header}' renamed to '{new_header}' in {db_name}", fg=typer.colors.BRIGHT_GREEN)
     if show_table:
-        print_headers(db_name, headers, [new_header])
+        print_table(db_name, headers, [], modified_headers=[new_header])
 
 
 @rename_app.command("headers")
@@ -142,4 +143,4 @@ def rename_headers(
     save_db(db_name, data)
     typer.secho(f"Headers '{' '.join(headers)}' renamed to '{' '.join(new_headers)}' in {db_name}", fg=typer.colors.BRIGHT_GREEN)
     if show_table:
-        print_headers(db_name, old_headers, new_headers)
+        print_table(db_name, old_headers, [], modified_headers=new_headers)

@@ -6,7 +6,6 @@ from rich.table import Table
 CONFIG_PATH = os.getcwd()
 DB_PATH = f"{CONFIG_PATH}/.database"
 
-d = {"headers": ["index", "task", "status", "due_date"]}
 
 def check_exists(path: str) -> bool:
     return os.path.exists(path)
@@ -56,19 +55,10 @@ def delete_db(db_name: str):
     os.remove(f"{DB_PATH}/{db_name}.pkl")
 
 
-#--------------RICK UTILS----------------
-def print_headers(title: str, headers: list[str], modified: list[str]=None):
-    console = Console()
-    table = Table(title=title, show_header=True, header_style="b deep_sky_blue1")
-    for header in headers:
-        if modified and header in modified:
-            table.add_column(header, header_style="b spring_green2")
-        else:
-            table.add_column(header)
-    console.print(table)
-
+#--------------------------------RICK----------------------------------------------
 def print_table(title: str, headers: list[str], rows: list[list[str]],
-               added_headers: list[str]=None, deleted_columns: list[str]=None,
+               added_headers: list[str]=None, modified_headers: list[str]=None,
+                 deleted_columns: list[str]=None,
                added_rows: list[int]=None, deleted_rows: list[int]=None,
                show_index: bool=False, show_headers: bool=True):
     console = Console()
@@ -76,10 +66,12 @@ def print_table(title: str, headers: list[str], rows: list[list[str]],
     if show_index:
         headers.insert(0, "Index")
     for header in headers:
+        if added_headers and header in added_headers:
+            table.add_column(header, header_style="b spring_green2")
+        elif modified_headers and header in modified_headers:
+            table.add_column(header, header_style="b dark_orange")
         if deleted_columns and header in deleted_columns:
             table.add_column(header, style="b s red", justify="center")
-        elif added_headers and header in added_headers:
-            table.add_column(header, header_style="b spring_green2")
         else:
             table.add_column(header)
 
@@ -100,4 +92,3 @@ def print_table(title: str, headers: list[str], rows: list[list[str]],
                 table.add_row(*[str(item) for item in row])
 
     console.print(table)
-

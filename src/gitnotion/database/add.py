@@ -3,7 +3,7 @@ from typing_extensions import Annotated
 from .utils import get_db_data, save_db, print_table
 app = typer.Typer()
 add_app = typer.Typer()
-app.add_typer(add_app, name="add")
+app.add_typer(add_app, name="add", help="Add data to a database")
 
 
 @add_app.command("row")

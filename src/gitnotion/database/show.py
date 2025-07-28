@@ -37,6 +37,29 @@ def show(
             show_default=False
         )
     ] = None,
+    # Click supports nargs but Typer does not, so I can use a callback function 
+    # to allow the user to pass an int. I had to use -n to modify the default 10 rows
+    head: Annotated[
+        bool,
+        typer.Option(
+            help="Show the first 10 rows of the database",
+            show_default=False,
+        )
+    ] = None,
+    tail: Annotated[
+        bool,
+        typer.Option(
+            help="Show the last 10 rows of the database",
+            show_default=False
+        )
+    ] = False,
+    n: Annotated[
+        Optional[int],
+        typer.Option("-n",
+            help="Number of rows to show. Must be used with --head or --tail to modify the default 10 rows",
+            show_default=False
+        )
+    ] = None,
     index: Annotated[
         bool,
         typer.Option(
@@ -66,5 +89,15 @@ def show(
     if rows:
         db_rows = db_rows[rows[0]:rows[1]]
         index = False
-    
+    if head:
+        if n:
+            db_rows = db_rows[:n]
+        else:
+            db_rows = db_rows[:10]
+    if tail:
+        if n:
+            db_rows = db_rows[-n:]
+        else:
+            db_rows = db_rows[-10:]
+
     print_table(db_name, db_headers, db_rows, show_index=index)

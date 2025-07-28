@@ -6,7 +6,7 @@ from .utils import delete_db, get_db_data, save_db, print_table
 
 app = typer.Typer()
 delete_app = typer.Typer()
-app.add_typer(delete_app, name="delete")
+app.add_typer(delete_app, name="del", help="Delete data from a database")
 
 
 

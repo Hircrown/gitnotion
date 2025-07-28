@@ -5,10 +5,10 @@ from .utils import get_db_names
 
 app = typer.Typer()
 
-@app.command()
+@app.command("ls")
 def list():
     """
-    List all databases
+    List of the databases names
     """
     try:
         names = get_db_names()
