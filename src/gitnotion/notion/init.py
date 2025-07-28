@@ -4,10 +4,10 @@ from .utils import init_db, db_title, db_headers, last_time_edited
 from ..database.utils import save_db
 from rich.prompt import Prompt, Confirm
 
-app = typer.Typer(rich_help_panel="Notion Commands")
+app = typer.Typer()
 
 
-@app.command()
+@app.command(rich_help_panel="Notion Commands")
 def init(
     db_url: Annotated[
         str,
@@ -21,13 +21,13 @@ def init(
 ):
     """
     Initialize a Notion database.
-    First command to run to start interact with an existing Notion database
+    [b]First command to run to start interact with an existing Notion database[/b]
     """
-    res = init_db(db_url)
-    typer.echo(type(res))
+    res, db_id = init_db(db_url)
     if isinstance(res, dict):
         title = db_title(res)
         data = {
+            "id": db_id,
             "headers": db_headers(res),
             "rows": [],
             "last time edited": last_time_edited(res)
@@ -37,5 +37,4 @@ def init(
             if confirm:
                 title = Prompt.ask("Type the database title")
         save_db(title, data)
-        typer.echo(f"The {title} database has been initialized successfully!\n \
-                   Use the pull command to retrive all the rows")
+        typer.echo(f"The {title} database has been initialized successfully!\nUse the pull command to retrive all the rows")

@@ -2,6 +2,7 @@ import typer
 from typing_extensions import Annotated
 from .utils import get_db_data, save_db
 from rich import print
+from rich.prompt import Confirm
 
 app = typer.Typer()
 
@@ -59,5 +60,8 @@ def change(
     old_value = rows[row_index][header_index]
     rows[row_index][header_index] = value
     data["rows"] = rows
+    confirm = Confirm.ask(f"Are you sure you want to change [b orange1]{old_value}[/b orange1] to [b orange1]{value}[/b orange1]")
+    if not confirm:
+        return
     save_db(db_name, data)
     print(f"The value [b green]{old_value}[/b green] has been changed to the value [b green]{value}[/b green]")
